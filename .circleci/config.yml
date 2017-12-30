@@ -11,7 +11,7 @@ jobs:
           - v6-dependencies-{{ checksum "elm-package.json" }}
           - v6-dependencies-
       - run: ./.circleci/ensure_libsysconfcpus.sh
-      - run: npm install elm-test
+      - run: npm install elm elm-test
       - run: ./.circleci/replace_elm_make.sh
       - run: ./node_modules/.bin/elm-test
       - save_cache:
@@ -32,7 +32,7 @@ jobs:
           - v8-dependencies-{{ checksum "elm-package.json" }}
           - v8-dependencies-
       - run: ./.circleci/ensure_libsysconfcpus.sh
-      - run: npm install elm-test
+      - run: npm install elm elm-test
       - run: ./.circleci/replace_elm_make.sh
       - run: ./node_modules/.bin/elm-test
       - save_cache:
