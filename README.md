@@ -1,6 +1,8 @@
 # elm-amazon-product-advertising
 
-Pure-Elm client of Amazon Product Advertising API (PAAPI).
+Pure-Elm client of [Amazon Product Advertising API (PAAPI)][paapi].
+
+[paapi]: https://docs.aws.amazon.com/AWSECommerceService/latest/DG/Welcome.html
 
 Performs [AWS V2 signing][v2] for request authentication.
 
