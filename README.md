@@ -1,5 +1,8 @@
 # elm-amazon-product-advertising
 
+[![Version](https://img.shields.io/badge/elm--package-1.0.0-blue.svg?maxAge=3600)](http://package.elm-lang.org/packages/ymtszw/elm-amazon-product-advertising/latest)
+[![CircleCI](https://circleci.com/gh/ymtszw/elm-amazon-product-advertising/tree/master.svg?style=svg)](https://circleci.com/gh/ymtszw/elm-amazon-product-advertising/tree/master)
+
 Pure-Elm client of [Amazon Product Advertising API (PAAPI)][paapi].
 
 [paapi]: https://docs.aws.amazon.com/AWSECommerceService/latest/DG/Welcome.html
