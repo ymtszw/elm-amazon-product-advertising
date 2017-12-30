@@ -5,7 +5,7 @@ jobs:
       - image: circleci/node:6
     working_directory: ~/repo
     steps:
-      - run: echo 'export PATH=./node_modules/.bin:$PATH' >> $BASH_ENV
+      - run: echo 'export PATH=$(npm bin):$PATH' >> $BASH_ENV
       - checkout
       - restore_cache:
           keys:
@@ -13,7 +13,6 @@ jobs:
           - v6-dependencies-
       - run: ./.circleci/ensure_libsysconfcpus.sh
       - run: npm install elm elm-test
-      - run: which elm-make elm-package elm-test
       - run: ./.circleci/replace_elm_make.sh
       - run: elm-test
       - save_cache:
@@ -28,7 +27,7 @@ jobs:
       - image: circleci/node:8
     working_directory: ~/repo
     steps:
-      - run: echo 'export PATH=./node_modules/.bin:$PATH' >> $BASH_ENV
+      - run: echo 'export PATH=$(npm bin):$PATH' >> $BASH_ENV
       - checkout
       - restore_cache:
           keys:
@@ -36,7 +35,6 @@ jobs:
           - v8-dependencies-
       - run: ./.circleci/ensure_libsysconfcpus.sh
       - run: npm install elm elm-test
-      - run: which elm-make elm-package elm-test
       - run: ./.circleci/replace_elm_make.sh
       - run: elm-test
       - save_cache:
