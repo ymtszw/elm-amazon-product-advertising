@@ -5,16 +5,15 @@ jobs:
       - image: circleci/node:6
     working_directory: ~/repo
     steps:
-      - run: echo 'export PATH=$(npm bin):$PATH' >> $BASH_ENV
       - checkout
       - restore_cache:
           keys:
-          - v6-dependencies-{{ checksum "elm-package.json" }}
+          - v6-dependencies-{{ checksum "package.json" }}-{{ checksum "elm-package.json" }}
           - v6-dependencies-
       - run: ./.circleci/ensure_libsysconfcpus.sh
-      - run: npm install elm elm-test
+      - run: npm install
       - run: ./.circleci/replace_elm_make.sh
-      - run: elm-test
+      - run: npm test
       - save_cache:
           paths:
             - sysconfcpus
@@ -27,23 +26,22 @@ jobs:
       - image: circleci/node:8
     working_directory: ~/repo
     steps:
-      - run: echo 'export PATH=$(npm bin):$PATH' >> $BASH_ENV
       - checkout
       - restore_cache:
           keys:
           - v8-dependencies-{{ checksum "elm-package.json" }}
           - v8-dependencies-
       - run: ./.circleci/ensure_libsysconfcpus.sh
-      - run: npm install elm elm-test
+      - run: npm install
       - run: ./.circleci/replace_elm_make.sh
-      - run: elm-test
+      - run: npm test
       - save_cache:
           paths:
             - sysconfcpus
             - node_modules
             - elm-stuff
             - tests/elm-stuff
-          key: v8-dependencies-{{ checksum "elm-package.json" }}
+          key: v8-dependencies-{{ checksum "package.json" }}-{{ checksum "elm-package.json" }}
 
 workflows:
   version: 2

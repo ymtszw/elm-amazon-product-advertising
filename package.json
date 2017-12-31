@@ -1,0 +1,25 @@
+{
+  "name": "elm-amazon-product-advertising",
+  "version": "1.0.0",
+  "description": "Pure-Elm client for PAAPI",
+  "main": "index.js",
+  "devDependencies": {
+    "elm": "^0.18.0",
+    "elm-test": "^0.18.12"
+  },
+  "scripts": {
+    "make": "elm-make",
+    "package": "elm-package",
+    "test": "elm-test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ymtszw/elm-amazon-product-advertising.git"
+  },
+  "author": "ymtszw",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/ymtszw/elm-amazon-product-advertising/issues"
+  },
+  "homepage": "https://github.com/ymtszw/elm-amazon-product-advertising#readme"
+}
