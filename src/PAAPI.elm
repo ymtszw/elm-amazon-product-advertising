@@ -135,9 +135,6 @@ type Error
 
 
 {-| Generate `Http.Request` to PAAPI.
-
-Always uses GET method.
-
 -}
 get :
     Time

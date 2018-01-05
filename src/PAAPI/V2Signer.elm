@@ -75,7 +75,7 @@ methodToString method =
 {-| Escapes strings per AWS's request signing standard (both V2 and current V4).
 
 It basically uses `encodeURIComponent` of JavaScript (via `Http.encodeUri`),
-though additionaly, replaces '*' to '%20'.
+though additionaly, replaces '*' to '%2A'.
 
 See [here](http://docs.aws.amazon.com/AWSECommerceService/latest/DG/Query_QueryAuth.html)
 for PAAPI authenticaton requirements (V2 signing).
@@ -87,4 +87,4 @@ urlEscape : String -> String
 urlEscape str =
     str
         |> Http.encodeUri
-        |> Regex.replace Regex.All (Regex.regex (Regex.escape "*")) (\_ -> "%20")
+        |> Regex.replace Regex.All (Regex.regex (Regex.escape "*")) (\_ -> "%2A")
