@@ -1,12 +1,15 @@
-module PAAPI.V2Signer exposing (Method(..), signedUrl, urlEscape)
+module PAAPI.V2Signer exposing (Method(..), signedUrl, urlEscape, urlEscapeC)
 
 {-| Generates AWS Request Signature V2 for PAAPI.
 -}
 
+import Bitwise
+import Char
 import Http
 import Regex
 import Crypto.HMAC as HMAC
 import Word.Bytes as Bytes
+import Word.Hex as Hex
 import BinaryBase64
 
 
@@ -33,13 +36,13 @@ signedUrl method endpoint path accessKeyId secretAccessKey params0 =
             ++ endpoint
             ++ path
             ++ ("?" ++ cp)
-            ++ ("&Signature=" ++ urlEscape signature)
+            ++ ("&Signature=" ++ urlEscapeC signature)
 
 
 canonicalParams : List ( String, String ) -> String
 canonicalParams params =
     params
-        |> List.map (\( k, v ) -> urlEscape k ++ "=" ++ urlEscape v)
+        |> List.map (\( k, v ) -> urlEscapeC k ++ "=" ++ urlEscapeC v)
         |> List.sort
         |> String.join "&"
 
@@ -75,7 +78,9 @@ methodToString method =
 {-| Escapes strings per AWS's request signing standard (both V2 and current V4).
 
 It basically uses `encodeURIComponent` of JavaScript (via `Http.encodeUri`),
-though additionaly, replaces '*' to '%2A'.
+though additionaly, replaces characters other than [URL-Unreserved characters][unr] and '*'.
+
+[unr]: https://tools.ietf.org/html/rfc3986#section-2.3
 
 See [here](http://docs.aws.amazon.com/AWSECommerceService/latest/DG/Query_QueryAuth.html)
 for PAAPI authenticaton requirements (V2 signing).
@@ -88,3 +93,48 @@ urlEscape str =
     str
         |> Http.encodeUri
         |> Regex.replace Regex.All (Regex.regex (Regex.escape "*")) (\_ -> "%2A")
+
+
+urlEscapeC : String -> String
+urlEscapeC str =
+    str
+        |> Http.encodeUri
+        |> String.foldr escapeReducer ""
+
+
+escapeReducer : Char -> String -> String
+escapeReducer char acc =
+    let
+        code =
+            Char.toCode char
+    in
+        if isUnreservedOrAsterisk code then
+            String.cons char acc
+        else
+            toHex code "" ++ acc
+
+
+isUnreservedOrAsterisk : Int -> Bool
+isUnreservedOrAsterisk i =
+    -- % - . _ ~
+    List.member i [ 37, 45, 46, 95, 126 ]
+        || -- 0-9
+           (48 <= i && i <= 57)
+        || -- A-Z
+           (65 <= i && i <= 90)
+        || -- a-z
+           (97 <= i && i <= 122)
+
+
+toHex : Int -> String -> String
+toHex i acc =
+    let
+        escaped =
+            "%" ++ (i |> Hex.fromByte |> String.toUpper) ++ acc
+    in
+        case Bitwise.shiftRightBy 8 i of
+            0 ->
+                escaped
+
+            nonzero ->
+                toHex nonzero escaped

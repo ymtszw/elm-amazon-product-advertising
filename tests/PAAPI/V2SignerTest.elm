@@ -12,6 +12,11 @@ suite =
         [ test "urlEscape should produce properly escaped string" <|
             \_ ->
                 equal
-                    (Signer.urlEscape "***")
-                    "%2A%2A%2A"
+                    (Signer.urlEscape "Aa0_-~*(Ω)%あいうå")
+                    "Aa0_-~%2A(%CE%A9)%25%E3%81%82%E3%81%84%E3%81%86%C3%A5"
+        , test "urlEscapeC should produce properly escaped string" <|
+            \_ ->
+                equal
+                    (Signer.urlEscapeC "Aa0_-~*(Ω)%あいうå")
+                    "Aa0_-~%2A%28%CE%A9%29%25%E3%81%82%E3%81%84%E3%81%86%C3%A5"
         ]
