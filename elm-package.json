@@ -1,5 +1,5 @@
 {
-    "version": "1.0.1",
+    "version": "1.0.2",
     "summary": "Client for Amazon Product Advertising API",
     "repository": "https://github.com/ymtszw/elm-amazon-product-advertising.git",
     "license": "BSD3",
