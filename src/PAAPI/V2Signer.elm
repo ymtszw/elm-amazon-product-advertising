@@ -102,20 +102,22 @@ urlEscapeC str =
         |> String.foldr escapeReducer ""
 
 
+{-| Keep URL-unreserved characters and '%', otherwise escape.
+-}
 escapeReducer : Char -> String -> String
 escapeReducer char acc =
     let
         code =
             Char.toCode char
     in
-        if isUnreservedOrAsterisk code then
+        if isUnreserved code then
             String.cons char acc
         else
             toHex code "" ++ acc
 
 
-isUnreservedOrAsterisk : Int -> Bool
-isUnreservedOrAsterisk i =
+isUnreserved : Int -> Bool
+isUnreserved i =
     -- % - . _ ~
     List.member i [ 37, 45, 46, 95, 126 ]
         || -- 0-9
