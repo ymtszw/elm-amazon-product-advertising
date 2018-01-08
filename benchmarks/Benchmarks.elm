@@ -20,6 +20,8 @@ suite =
                 \_ -> PAAPI.Time.toUtcIsoString posixMillisExample
             , benchmark "V2Signer.urlEscape" <|
                 \_ -> PAAPI.V2Signer.urlEscape stringToEscape
+            , benchmark "V2Signer.urlEscapeC" <|
+                \_ -> PAAPI.V2Signer.urlEscapeC stringToEscape
             ]
 
 

@@ -8,6 +8,7 @@
     "elm-test": "^0.18.12"
   },
   "scripts": {
+    "bench": "elm-benchmark",
     "make": "elm-make",
     "package": "elm-package",
     "test": "elm-test"
