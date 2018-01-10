@@ -5,8 +5,10 @@ module PAAPI
         , Locale(..)
         , Error(..)
         , get
+        , post
         , endpoint
         , doGet
+        , doPost
         )
 
 {-| Amazon Product Advertising API (PAAPI) Client module.
@@ -14,8 +16,6 @@ module PAAPI
 Performs AWS V2 signing for request authentication.
 
 <http://docs.aws.amazon.com/AWSECommerceService/latest/DG/Query_QueryAuth.html>
-
-It uses GET request with query strings in URL.
 
 
 ## Types
@@ -39,7 +39,7 @@ import Time exposing (Time)
 import Http
 import Http.Xml
 import Xml.Decode exposing (Decoder)
-import PAAPI.Internal exposing (signedUrl)
+import PAAPI.Internal as Internal
 import PAAPI.Time exposing (toUtcIsoString)
 
 
@@ -134,7 +134,11 @@ type Error
     | HttpError Http.Error
 
 
-{-| Generate `Http.Request` to PAAPI.
+{-| Generates `Http.Request` to PAAPI with GET.
+
+All parameters appear in query parameters of request URL.
+For that it will fail with Bad Request when requests got longer.
+
 -}
 get :
     Time
@@ -145,29 +149,57 @@ get :
     -> List ( String, String )
     -> Http.Request a
 get time locale creds tag decoder params =
-    Http.Xml.get
-        (signedUrl (endpoint locale)
+    params
+        |> timedParams time
+        |> Internal.signedUrlForGet (endpoint locale)
             creds
             tag
-            (( "Timestamp", toUtcIsoString time ) :: params)
-        )
-        decoder
+        |> flip Http.Xml.get decoder
 
 
-{-| Task to attempt requesting PAAPI.
+timedParams : Time -> List ( String, String ) -> List ( String, String )
+timedParams time params =
+    ( "Timestamp", toUtcIsoString time ) :: params
 
-It fetches current time and generate GET request to PAAPI, then send it.
 
+{-| Generates `Http.Request` to PAAPI with POST.
+
+All parameters appear in request body.
+
+-}
+post :
+    Time
+    -> Locale
+    -> Credentials
+    -> AssociateTag
+    -> Decoder a
+    -> List ( String, String )
+    -> Http.Request a
+post time locale creds tag decoder params =
+    params
+        |> timedParams time
+        |> Internal.signedParamsForPost (endpoint locale)
+            creds
+            tag
+        |> flip (uncurry Http.Xml.post) decoder
+
+
+{-| Task to attempt GET request to PAAPI.
 -}
 doGet : Locale -> Credentials -> AssociateTag -> Decoder a -> List ( String, String ) -> Task Error a
 doGet locale creds tag decoder params =
-    let
-        getTask time =
-            Http.toTask <| get time locale creds tag decoder params
-    in
-        Time.now
-            |> Task.andThen getTask
-            |> Task.mapError convertError
+    Time.now
+        |> Task.andThen (\time -> get time locale creds tag decoder params |> Http.toTask)
+        |> Task.mapError convertError
+
+
+{-| Task to attempt POST request to PAAPI.
+-}
+doPost : Locale -> Credentials -> AssociateTag -> Decoder a -> List ( String, String ) -> Task Error a
+doPost locale creds tag decoder params =
+    Time.now
+        |> Task.andThen (\time -> post time locale creds tag decoder params |> Http.toTask)
+        |> Task.mapError convertError
 
 
 

@@ -28757,7 +28757,7 @@ var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$toHex = F2(
 			}
 		}
 	});
-var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$isUnreservedOrAsterisk = function (i) {
+var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$isUnreserved = function (i) {
 	return A2(
 		_elm_lang$core$List$member,
 		i,
@@ -28786,7 +28786,7 @@ var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$isUnreservedOrAsterisk
 var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$escapeReducer = F2(
 	function ($char, acc) {
 		var code = _elm_lang$core$Char$toCode($char);
-		return _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$isUnreservedOrAsterisk(code) ? A2(_elm_lang$core$String$cons, $char, acc) : A2(
+		return _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$isUnreserved(code) ? A2(_elm_lang$core$String$cons, $char, acc) : A2(
 			_elm_lang$core$Basics_ops['++'],
 			A2(_ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$toHex, code, ''),
 			acc);
@@ -28842,13 +28842,14 @@ var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$canonicalRequest = F4(
 	});
 var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$sign = F5(
 	function (method, endpoint, path, secretAccessKey, canonicalParams) {
-		return _newlandsvalley$elm_binary_base64$BinaryBase64$encode(
-			A3(
-				_ktonon$elm_crypto$Crypto_HMAC$digestBytes,
-				_ktonon$elm_crypto$Crypto_HMAC$sha256,
-				_ktonon$elm_word$Word_Bytes$fromUTF8(secretAccessKey),
-				_ktonon$elm_word$Word_Bytes$fromUTF8(
-					A4(_ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$canonicalRequest, method, endpoint, path, canonicalParams))));
+		return _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$urlEscapeC(
+			_newlandsvalley$elm_binary_base64$BinaryBase64$encode(
+				A3(
+					_ktonon$elm_crypto$Crypto_HMAC$digestBytes,
+					_ktonon$elm_crypto$Crypto_HMAC$sha256,
+					_ktonon$elm_word$Word_Bytes$fromUTF8(secretAccessKey),
+					_ktonon$elm_word$Word_Bytes$fromUTF8(
+						A4(_ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$canonicalRequest, method, endpoint, path, canonicalParams)))));
 	});
 var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$canonicalParams = function (params) {
 	return A2(
@@ -28869,15 +28870,24 @@ var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$canonicalParams = func
 				},
 				params)));
 };
-var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$signedUrl = F6(
-	function (method, endpoint, path, accessKeyId, secretAccessKey, params0) {
+var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$signedParams = F6(
+	function (method, endpoint, path, accessKeyId, secretAccessKey, params) {
 		var cp = _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$canonicalParams(
 			{
 				ctor: '::',
 				_0: {ctor: '_Tuple2', _0: 'AWSAccessKeyId', _1: accessKeyId},
-				_1: params0
+				_1: params
 			});
-		var signature = A5(_ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$sign, method, endpoint, path, secretAccessKey, cp);
+		return A2(
+			_elm_lang$core$Basics_ops['++'],
+			cp,
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				'&Signature=',
+				A5(_ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$sign, method, endpoint, path, secretAccessKey, cp)));
+	});
+var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$signedUrl = F6(
+	function (method, endpoint, path, accessKeyId, secretAccessKey, params) {
 		return A2(
 			_elm_lang$core$Basics_ops['++'],
 			'https://',
@@ -28889,11 +28899,8 @@ var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$signedUrl = F6(
 					path,
 					A2(
 						_elm_lang$core$Basics_ops['++'],
-						A2(_elm_lang$core$Basics_ops['++'], '?', cp),
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							'&Signature=',
-							_ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$urlEscapeC(signature))))));
+						'?',
+						A6(_ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$signedParams, method, endpoint, path, accessKeyId, secretAccessKey, params)))));
 	});
 var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$POST = {ctor: 'POST'};
 var _ymtszw$elm_amazon_product_advertising$PAAPI_V2Signer$GET = {ctor: 'GET'};

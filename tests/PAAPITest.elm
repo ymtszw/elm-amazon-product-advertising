@@ -65,7 +65,7 @@ suite =
                         ]
                 in
                     exampleRequests
-                        |> List.map (\( locale, params ) -> Internal.signedUrl (PAAPI.endpoint locale) creds associateTag params)
+                        |> List.map (\( locale, params ) -> Internal.signedUrlForGet (PAAPI.endpoint locale) creds associateTag params)
                         |> equalLists expectedUrls
         ]
 

@@ -1,21 +1,40 @@
-module PAAPI.Internal exposing (signedUrl)
+module PAAPI.Internal exposing (signedUrlForGet, signedParamsForPost)
 
-import PAAPI.V2Signer as Signer exposing (Method(GET))
+import Http
+import PAAPI.V2Signer as Signer exposing (Method(GET, POST))
 
 
-signedUrl :
+signedUrlForGet :
     String
     -> { accessKeyId : String, secretAccessKey : String }
     -> String
     -> List ( String, String )
     -> String
-signedUrl endpoint { accessKeyId, secretAccessKey } tag params =
+signedUrlForGet endpoint { accessKeyId, secretAccessKey } tag params =
     Signer.signedUrl GET
         endpoint
         paapiPath
         accessKeyId
         secretAccessKey
         (requiredParams tag ++ params)
+
+
+signedParamsForPost :
+    String
+    -> { accessKeyId : String, secretAccessKey : String }
+    -> String
+    -> List ( String, String )
+    -> ( String, Http.Body )
+signedParamsForPost endpoint { accessKeyId, secretAccessKey } tag params =
+    ( "https://" ++ endpoint ++ paapiPath
+    , Signer.signedParams POST
+        endpoint
+        paapiPath
+        accessKeyId
+        secretAccessKey
+        (requiredParams tag ++ params)
+        |> Http.stringBody "application/x-www-form-urlencoded"
+    )
 
 
 paapiPath : String
