@@ -25,7 +25,7 @@ Performs AWS V2 signing for request authentication.
 
 ## APIs
 
-@docs get, doGet
+@docs get, post, doGet, doPost
 
 
 ## Helpers
