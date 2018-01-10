@@ -15,6 +15,11 @@ For decoding XML response, we use [ymtszw/elm-xml-decode][exd].
 
 [exd]: http://package.elm-lang.org/packages/ymtszw/elm-xml-decode/latest
 
+## Test application
+
+See [TestApp.elm](https://github.com/ymtszw/elm-amazon-product-advertising/blob/master/TestApp.elm).
+This is actually running in CI.
+
 ## Note on V2 signing
 
 [AWS V2 signing][v2] is deprecated and no longer used for newly introduced AWS services.

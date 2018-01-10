@@ -33,7 +33,7 @@ signedParamsForPost endpoint { accessKeyId, secretAccessKey } tag params =
         accessKeyId
         secretAccessKey
         (requiredParams tag ++ params)
-        |> Http.stringBody "application/x-www-form-urlencoded"
+        |> Http.stringBody "application/x-www-form-urlencoded; charset=utf-8"
     )
 
 
