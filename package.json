@@ -12,7 +12,7 @@
     "bench": "elm-benchmark",
     "make": "elm-make",
     "package": "elm-package",
-    "run_test_app": "elm-make TestApp.elm --output=test_app.js && node test_app_runner.js",
+    "test_app": "elm-make TestApp.elm --output=test_app.js && node test_app_runner.js",
     "test": "elm-test"
   },
   "repository": {
