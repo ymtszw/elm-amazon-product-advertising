@@ -1,4 +1,4 @@
-module PAAPI.V2Signer exposing (Method(..), signedUrl, urlEscape, urlEscapeC)
+module PAAPI.V2Signer exposing (Method(..), signedUrl, signedParams, urlEscape, urlEscapeC)
 
 {-| Generates AWS Request Signature V2 for PAAPI.
 -}
@@ -24,19 +24,23 @@ Always uses https.
 
 -}
 signedUrl : Method -> String -> String -> String -> String -> List ( String, String ) -> String
-signedUrl method endpoint path accessKeyId secretAccessKey params0 =
+signedUrl method endpoint path accessKeyId secretAccessKey params =
+    "https://"
+        ++ endpoint
+        ++ path
+        ++ "?"
+        ++ signedParams method endpoint path accessKeyId secretAccessKey params
+
+
+{-| Generates URL-encoded signed parameters.
+-}
+signedParams : Method -> String -> String -> String -> String -> List ( String, String ) -> String
+signedParams method endpoint path accessKeyId secretAccessKey params =
     let
         cp =
-            canonicalParams <| ( "AWSAccessKeyId", accessKeyId ) :: params0
-
-        signature =
-            sign method endpoint path secretAccessKey cp
+            canonicalParams <| ( "AWSAccessKeyId", accessKeyId ) :: params
     in
-        "https://"
-            ++ endpoint
-            ++ path
-            ++ ("?" ++ cp)
-            ++ ("&Signature=" ++ urlEscapeC signature)
+        cp ++ "&Signature=" ++ sign method endpoint path secretAccessKey cp
 
 
 canonicalParams : List ( String, String ) -> String
@@ -53,6 +57,7 @@ sign method endpoint path secretAccessKey canonicalParams =
         |> Bytes.fromUTF8
         |> HMAC.digestBytes HMAC.sha256 (Bytes.fromUTF8 secretAccessKey)
         |> BinaryBase64.encode
+        |> urlEscapeC
 
 
 canonicalRequest : Method -> String -> String -> String -> String
