@@ -9,6 +9,7 @@
     "xhr2": "^0.1.4"
   },
   "scripts": {
+    "postinstall": "elm-package install --yes",
     "bench": "elm-benchmark",
     "make": "elm-make",
     "package": "elm-package",
